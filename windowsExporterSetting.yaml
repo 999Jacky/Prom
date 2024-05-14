@@ -1,0 +1,9 @@
+collectors:
+  enabled: cpu,cpu_info,cs,iis,logical_disk,memory,mssql,net,os,process,service,system,tcp
+  # 差mssql
+  # enabled: cpu,cpu_info,cs,iis,logical_disk,memory,net,os,process,service,system,tcp
+collector:
+  service:
+    services-where: "Name='windows_exporter'"
+log:
+  level: warn
