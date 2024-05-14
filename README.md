@@ -7,17 +7,16 @@
 2. 安裝Prometheus
     * 透過docker
     *  注意會是prom主動去打目標電腦的api去撈資料,所以設定--net設成host方便測試,測試完成可以加上-d或改用docker compose
-```shell
-docker run \
-    -p 9090:9090 \
-    -v /home/jacky/dockerCmd/prometheus/config/:/etc/prometheus/ \
-    -v /home/jacky/dockerCmd/prometheus/data/:/prometheus \
-    --name prom \
-    --net=host \
-    --rm \
+    ```shell
+    docker run \
+        -p 9090:9090 \
+        -v /home/jacky/dockerCmd/prometheus/config/:/etc/prometheus/ \
+        -v /home/jacky/dockerCmd/prometheus/data/:/prometheus \
+        --name prom \
+        --net=host \
+        --rm \
       prom/prometheus
-```` 
-
+    ````
 3. 設定prom(參考[yaml](./prom/prometheus.yml))
     +  這裡有兩種設定方法
         1. 共用job,只要把ip寫在另一個文件上[scrape_local.yaml](./prom/scrape_local.yml)
@@ -38,7 +37,7 @@ docker run \
             scrape_config_files:
                 - /etc/prometheus/job*.yml
             ```
-4. 重啟prometheus服務重新讀取
+4. 重啟prometheus服務重新讀取(或是透過hot reload)
 
 在Target會看到有endpoint了
 ![prom1.png](img/prom1.png)
