@@ -36,8 +36,13 @@ curl %METRICS_URL% | curl --data-binary @- %PUSHGATEWAY_URL%
 
 ### 刪除PushGateway過時指標
 
-因為.net沒有parse指標格式的lib,所以透過golang而外寫,參考[main.go](./ClearTimeout/main.go),
-在執行檔傳入以下參數
+因為.net沒有parse指標格式的lib,所以透過golang而外寫,build
+```shell
+go build
+# 跨平臺編譯可以用gox
+gox -osarch="linux/amd64"
+```
+參考[main.go](./ClearTimeout/main.go),在執行檔傳入以下參數
 
 + -url pushGateway url
 + -timeout 逾時時間
