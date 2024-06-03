@@ -20,7 +20,7 @@ Prometheus再從gateway上抓取所有指標.
 ### 目標裝置安裝
 
 * Label設定接在/job/{jobLabel}/labelName/labelValue後面(需要encode)
-* 透過windows排程設定呼叫cmd,但是會彈出cmd
+* 透過windows排程設定呼叫cmd,但是執行時會彈出cmd的視窗
 
 ```cmd push.bat
 @echo off
@@ -30,13 +30,15 @@ set PUSHGATEWAY_URL=http://localhost:9091/metrics/job/12345/instance/PC
 curl %METRICS_URL% | curl --data-binary @- %PUSHGATEWAY_URL%
 ```
 
-* 透過程式(hangfire)
-* 參考 [appsettings.Client.json](./hangfire/appsettings.Client.json)設定
-* 預設從已安裝exporter轉送指標
++ 透過程式(hangfire)
+  + 參考 [appsettings.Client.json](./hangfire/appsettings.Client.json)設定
+  + 預設從已安裝exporter轉送指標
 
 ### 刪除PushGateway過時指標
 
-因為.net沒有parse指標格式的lib,所以透過golang而外寫,build
+因為.net沒有parse指標格式的lib,所以透過golang而外寫,
+
+build
 ```shell
 go build
 # 跨平臺編譯可以用gox
