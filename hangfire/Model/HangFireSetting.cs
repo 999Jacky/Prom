@@ -13,7 +13,6 @@ namespace hangfire.Model {
         [Required]
         public string PushGatewayUrl { get; set; }
 
-        [AllowedValues(ServerMode, ClientMode)]
         [Required]
         public string Mode { get; set; }
 
@@ -26,19 +25,24 @@ namespace hangfire.Model {
 
         public string PushJobCron { get; set; }
         public string ExporterUrl { get; set; }
+        public string? ExecFile { get; set; }
+        public string? ExecArgs { get; set; }
         public Dictionary<string, string>? Labels { get; set; }
     }
     public class ServerSetting {
         public string ClearJobCron { get; set; }
+        public string? ExecFile { get; set; }
+        public string? ExecArgs { get; set; }
     }
 
     public class OnHangFireSettingChange {
-        private readonly IBackgroundJobClient _jobClient;
         private readonly JobStorage _jobStorage;
         private readonly IDisposable? _onChangeToken;
-        public OnHangFireSettingChange(IOptionsMonitor<HangFireConst> constMonitor, IBackgroundJobClient jobClient, JobStorage jobStorage) {
-            _jobClient = jobClient;
+
+        // private readonly StartupService _startupService;
+        public OnHangFireSettingChange(IOptionsMonitor<HangFireConst> constMonitor, JobStorage jobStorage) {
             _jobStorage = jobStorage;
+            // _startupService = startupService;
             _onChangeToken = constMonitor.OnChange(OnChange);
             this.RegisterJob(constMonitor.CurrentValue);
         }
@@ -47,6 +51,7 @@ namespace hangfire.Model {
             foreach (var job in _jobStorage.GetConnection().GetRecurringJobs()) {
                 RecurringJob.RemoveIfExists(job.Id);
             }
+            // _ = _startupService.Restart();
             RegisterJob(option);
         }
 
@@ -62,6 +67,7 @@ namespace hangfire.Model {
                     if (option.ServerSetting == null) {
                         throw new Exception("缺少Server設定");
                     }
+                    AddJob<ClearTimeoutJob, int>(option.ServerSetting.ClearJobCron, 0);
                     break;
             }
         }

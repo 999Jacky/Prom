@@ -24,6 +24,7 @@ namespace hangfire.Job {
                 urlPamas += $"/{label.Key}/{label.Value}";
             }
             var resp = await httpClient.PostAsync($"{_options.CurrentValue.PushGatewayUrl}/metrics/job/{urlPamas}", content);
+            var code = resp.StatusCode;
         }
     }
 }

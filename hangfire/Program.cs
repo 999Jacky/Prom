@@ -1,3 +1,4 @@
+using hangfire;
 using Hangfire;
 using hangfire.Model;
 
@@ -19,6 +20,7 @@ builder.Services.Configure<HangFireConst>(
     builder.Configuration.GetSection(HangFireConst.ConfigureName)
 );
 builder.Services.AddSingleton<OnHangFireSettingChange>();
+// builder.Services.AddSingleton<StartupService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,9 +50,10 @@ app.UseHttpsRedirection();
 //     .WithName("GetWeatherForecast")
 //     .WithOpenApi();
 app.UseHangfireDashboard();
-// var backgroundJobs = app.Services.GetService<BackgroundJobClient>();
-// backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 app.Services.GetService<OnHangFireSettingChange>();
+// var startUpService = app.Services.GetService<StartupService>();
+// startUpService!.Startup();
+// app.Lifetime.ApplicationStopping.Register(() => startUpService.Shutdown().GetAwaiter().GetResult());
 app.Run();
 //
 // record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary) {

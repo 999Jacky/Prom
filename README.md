@@ -1,4 +1,4 @@
-# Prometheus & windowsExporter
+# Prometheus & windowsExporter & PushGateway
 
 ## 需求
   收集&監控Windows PC上各個指標(ram,disk...等)
@@ -38,6 +38,7 @@
                 - /etc/prometheus/job*.yml
             ```
 4. 重啟prometheus服務重新讀取(或是透過hot reload)
+5. 根據需求設定[Gateway](./pushGateway.md)
 
 在Target會看到有endpoint了
 ![prom1.png](img/prom1.png)

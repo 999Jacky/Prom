@@ -20,7 +20,7 @@ func isMetricsStale(timestamp float64, retentionPeriodMinutes int) bool {
 
 func main() {
 	pushGatewayUrl := flag.String("url", "", "The URL of the pushgateway metrics")
-	retentionPeriodMinutes := flag.Int("timeout", 4, "Retention period in minutes (default 1 hour)")
+	retentionPeriodMinutes := flag.Int("timeout", 60, "Retention period in minutes (default 1 hour)")
 	flag.Parse()
 
 	if *pushGatewayUrl == "" {
@@ -79,7 +79,7 @@ func main() {
 					}
 					defer delResp.Body.Close()
 
-					if delResp.StatusCode != http.StatusOK {
+					if delResp.StatusCode != 202 {
 						log.Fatalf("Failed to delete metrics, unexpected status code: %d", delResp.StatusCode)
 					}
 
