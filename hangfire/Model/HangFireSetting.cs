@@ -15,6 +15,8 @@ namespace hangfire.Model {
 
         [Required]
         public string Mode { get; set; }
+        
+        public BasicAuth? BasicAuth { get; set; }
 
         public ClientSetting? ClientSetting { get; set; }
         public ServerSetting? ServerSetting { get; set; }
@@ -33,6 +35,11 @@ namespace hangfire.Model {
         public string ClearJobCron { get; set; }
         public string? ExecFile { get; set; }
         public string? ExecArgs { get; set; }
+    }
+
+    public class BasicAuth {
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 
     public class OnHangFireSettingChange {

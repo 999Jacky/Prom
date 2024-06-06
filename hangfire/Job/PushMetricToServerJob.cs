@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Text;
 using Hangfire;
 using hangfire.Model;
 using Microsoft.Extensions.Options;
@@ -22,6 +24,10 @@ namespace hangfire.Job {
             urlPamas += $"/instance/{_options.CurrentValue.ClientSetting.Instance}";
             foreach (var label in _options.CurrentValue?.ClientSetting?.Labels ?? new Dictionary<string, string>()) {
                 urlPamas += $"/{label.Key}/{label.Value}";
+            }
+            if (_options.CurrentValue.BasicAuth != null && !string.IsNullOrWhiteSpace(_options.CurrentValue.BasicAuth.UserName)) {
+                var byteArray = Encoding.ASCII.GetBytes($"{_options.CurrentValue.BasicAuth.UserName}:{_options.CurrentValue.BasicAuth.Password}");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             }
             var resp = await httpClient.PostAsync($"{_options.CurrentValue.PushGatewayUrl}/metrics/job/{urlPamas}", content);
             var code = resp.StatusCode;

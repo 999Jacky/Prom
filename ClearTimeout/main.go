@@ -21,6 +21,8 @@ func isMetricsStale(timestamp float64, retentionPeriodMinutes int) bool {
 func main() {
 	pushGatewayUrl := flag.String("url", "", "The URL of the pushgateway metrics")
 	retentionPeriodMinutes := flag.Int("timeout", 60, "Retention period in minutes (default 1 hour)")
+	userName := flag.String("username", "", "Username to authenticate to push metrics")
+	password := flag.String("password", "", "Password to authenticate to push metrics")
 	flag.Parse()
 
 	if *pushGatewayUrl == "" {
@@ -31,9 +33,17 @@ func main() {
 		Timeout: time.Duration(1) * time.Minute, // Request timeout set to 10 minutes
 	}
 
-	resp, err := client.Get(*pushGatewayUrl + "/metrics")
+	req, err := http.NewRequest("GET", *pushGatewayUrl+"/metrics", nil)
 	if err != nil {
-		log.Fatalf("Failed to fetch metrics: %v", err)
+		log.Fatal(err)
+	}
+	if *userName != "" {
+		req.SetBasicAuth(*userName, *password)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
@@ -72,7 +82,10 @@ func main() {
 					if err != nil {
 						log.Fatalf("Failed to create DELETE request: %v", err)
 					}
-
+					if *userName != "" {
+						req.SetBasicAuth(*userName, *password)
+					}
+					
 					delResp, err := client.Do(req)
 					if err != nil {
 						log.Fatalf("Failed to delete stale metrics: %v", err)
